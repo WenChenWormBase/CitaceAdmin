@@ -9,7 +9,7 @@ if ($#ARGV !=0) {
 
 print "Get citace statistics ...\n";
 
-my $tace='/home/citace/bin/tace';
+my $tace='/usr/local/acedb/bin/tace';
 
 my ($s, $query, $TotalObj, $gene, $paper, $tmp_length);
 my $PaperGeneLink = 0;
@@ -27,6 +27,10 @@ my @SimpleQueryList = (
     "find Expression_cluster",
     "find RNAi",
     "find Interaction",
+    "QUERY FIND Interaction Physical",
+    "QUERY FIND Interaction Predicted",
+    "QUERY FIND Interaction Regulatory",
+    "QUERY FIND Interaction Genetic",
     "find Paper",
     "find Person",
     "find Transgene",  
@@ -59,12 +63,12 @@ my @tmp;
 
 #---------- Start Parsing Paper Class ----------------------
 print "connecting to citace ...";
-my $acedbpath='/home/citace/citace/';
+my $acedbpath='/home/citace/citace';
 my $db = Ace->connect(-path => $acedbpath,  -program => $tace) || die print
 "Connection failure: ", Ace->error;
 
 #open (OUT, ">CitaceStats.txt") || die "can't open dataset_list.txt!";
-open (OUT, ">$ARGV[0]") || die "cannot open $ARGV[1]: $!\n";
+open (OUT, ">$ARGV[0]") || die "cannot open $ARGV[0]: $!\n";
 
 foreach $s (@SimpleQueryList) {
     $query = $s;
