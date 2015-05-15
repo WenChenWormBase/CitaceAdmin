@@ -48,7 +48,8 @@ my @SimpleQueryList = (
     "QUERY FIND Molecule Interaction",
     "QUERY FIND Molecule WBProcess",
     "QUERY FIND Gene Expr_pattern",
-    "QUERY FIND Gene GO_term",
+    #"QUERY FIND Gene GO_term",
+    "QUERY FIND Gene GO_annotation",
     "QUERY FIND Gene Concise_description",
     "QUERY FIND Gene Automated_description",
     "QUERY FIND Gene Experimental_model",
@@ -93,16 +94,16 @@ foreach $s (@SimpleQueryList) {
     @Obj = ();
 }
 
-$query = "QUERY FIND Gene GO_term";
+$query = "QUERY FIND Gene GO_annotation";
 @Obj = $db->find($query);
 foreach  $gene (@Obj) {
-    @tmp = $gene->GO_term;
+    @tmp = $gene->GO_annotation;
     $tmp_length = @tmp;
     $GeneGOLink = $GeneGOLink + $tmp_length;
     #print "$GeneGOLink\n";
     @tmp = ();
 }
-print OUT "Total Gene--GO_term links: $GeneGOLink\n";
+print OUT "Total Gene--GO_annotation links: $GeneGOLink\n";
 @Obj = ();
 
 $query = "QUERY Find Paper Gene";
