@@ -31,3 +31,7 @@ This script count the total number of objects or links in each class in citace
 7. getStatsDiff.pl
 This script compare the current results of getCitaceStats.pl with the previous version of citace and get the difference. 
 
+8. citacePostProcess.pl 
+This script populate Paper - GO_term links based on Paper - WBProcess curation. Output file is citacePostProcess.ace  All ace entries contain time stamps indicating that it was inferred using a script. 
+
+
