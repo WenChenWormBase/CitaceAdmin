@@ -9,7 +9,7 @@ if ($#ARGV !=0) {
 
 print "Get citace statistics ...\n";
 
-my $tace='/usr/local/acedb/bin/tace';
+my $tace='/usr/local/bin/tace';
 
 my ($s, $query, $TotalObj, $gene, $paper, $tmp_length, $var);
 my $PaperGeneLink = 0;
@@ -24,9 +24,10 @@ my @SimpleQueryList = (
     "find Anatomy_function",
     "find DO_term",
     "find Expr_pattern",
-    "find Picture",
+    "find Picture",    
     "find Microarray_experiment",
     "find Expression_cluster",
+    "QUERY FIND Analysis MassSpec*",
     "find RNAi",
     "find Interaction",
     "QUERY FIND Interaction Physical",
@@ -48,7 +49,6 @@ my @SimpleQueryList = (
     "QUERY FIND Molecule Interaction",
     "QUERY FIND Molecule WBProcess",
     "QUERY FIND Gene Expr_pattern",
-    #"QUERY FIND Gene GO_term",
     "QUERY FIND Gene GO_annotation",
     "QUERY FIND Gene Concise_description",
     "QUERY FIND Gene Automated_description",
@@ -58,10 +58,60 @@ my @SimpleQueryList = (
     "QUERY FIND Paper Expr_pattern",
     "QUERY FIND Paper Expression_cluster",
     "QUERY FIND Paper Microarray_experiment",
+    "QUERY FIND Analysis MassSpec*; follow Reference",
     "QUERY FIND Paper Interaction",
     "QUERY FIND Paper RNAi",
-    "QUERY FIND Paper Transgene",
+    "QUERY FIND Paper Transgene"
 );
+
+
+my %SimpleQueryName = ( 
+    "find Antibody" => "Antibody",
+    "find Anatomy_term" => "Anatomy Term",
+    "find Anatomy_function" => "Anatomy Function",
+    "find DO_term" => "Disease Ontology Term",
+    "find Expr_pattern" => "Expression Pattern",
+    "find Picture" => "Picture",
+    "find Microarray_experiment" => "Microarray Experiment",
+    "find Expression_cluster" => "Expression Cluster",
+    "QUERY FIND Analysis MassSpec*" => "Proteomic Analysis",
+    "find RNAi" => "RNAi",
+    "find Interaction" => "Interaction (total)",
+    "QUERY FIND Interaction Physical" => "Physical Interaction",
+    "QUERY FIND Interaction Predicted" => "Predicted Interaction",
+    "QUERY FIND Interaction Regulatory" => "Gene Regulation",
+    "QUERY FIND Interaction Genetic" => "Genetic Interaction",
+    "find Paper" => "Paper",
+    "find Person" => "Person",
+    "find Transgene" => "Transgene",  
+    "find WBProcess" => "Topic (total)",  
+    "QUERY FIND Variation Phenotype" => "Variation with Phenotype",
+    "QUERY FIND Variation Phenotype_not_observed" => "Variation with Phenotype Not Obbserved",
+    "QUERY FIND RNAi Phenotype" => "RNAi with Phenotype",
+    "QUERY FIND RNAi Phenotype_not_observed" => "RNAi with Phenotype Not Observed",
+    "QUERY FIND Transgene Phenotype" => "Transgene with Phenotype",  
+    "QUERY FIND Strain Phenotype" => "Strain with Phenotype",  
+    "QUERY FIND Molecule RNAi" => "Chemicals Related to RNAi",
+    "QUERY FIND Molecule Variation" => "Chemicals Related to Variation",
+    "QUERY FIND Molecule Interaction" => "Chemicals Related to Interaction",
+    "QUERY FIND Molecule WBProcess" => "Chemicals Mentioned in Topic",
+    "QUERY FIND Gene Expr_pattern" => "Gene with Expression Pattern",
+    "QUERY FIND Gene GO_annotation" => "Gene with GO annotation",
+    "QUERY FIND Gene Concise_description" => "Gene with Hand-written Concise Description",
+    "QUERY FIND Gene Automated_description" => "Gene with Automatically Generated Description",
+    "QUERY FIND Gene Experimental_model" => "Gene with Experimental Model",
+    "QUERY FIND Gene Disease_relevance" => "Gene with Disease Relevance",
+    "QUERY FIND Paper Antibody" => "Paper with Antibody",
+    "QUERY FIND Paper Expr_pattern" => "Paper with Expression Pattern",
+    "QUERY FIND Paper Expression_cluster" => "Paper with Expression Cluster",
+    "QUERY FIND Paper Microarray_experiment" => "Paper with Microarray Experiment",
+    "QUERY FIND Analysis MassSpec*; follow Reference" => "Paper with Proteomic Analysis",
+    "QUERY FIND Paper Interaction" => "Paper with Interaction",
+    "QUERY FIND Paper RNAi" => "Paper with RNAi",
+    "QUERY FIND Paper Transgene" => "Paper with Transgene"
+);
+
+
 my @Obj;
 my @tmp;
 
@@ -78,19 +128,28 @@ foreach $s (@SimpleQueryList) {
     $query = $s;
     @Obj = $db->find($query);
     $TotalObj = @Obj;
-    if ($s =~ /^find/) {
-	print OUT "$s: $TotalObj\n";
-    } elsif ($s =~ /^QUERY/) {
-	@tmp = split /\s/, $s;
-	$tmp_length = @tmp;
-	if ($tmp_length == 4) {
-	   print OUT "$tmp[2] with $tmp[3]: $TotalObj\n";
-	} else {
-	   print "QUERY ERROR: $s\n";
-	}  
+
+   #if ($s =~ /^find/) {	
+	#print OUT "$s: $TotalObj\n";
+    #} elsif ($s =~ /^QUERY/) {
+	#@tmp = split /\s/, $s;
+	#$tmp_length = @tmp;
+	#if ($tmp_length == 4) {
+	   #print OUT "$tmp[2] with $tmp[3]: $TotalObj\n";
+	#} else {
+	   #print "QUERY ERROR: $s\n";
+	#}  
+   # } else {
+        #print "QUERY ERROR: $s\n";
+    #}
+ 
+    if ($SimpleQueryName{$s}) {
+	print OUT "$SimpleQueryName{$s}: $TotalObj\n";
     } else {
         print "QUERY ERROR: $s\n";
     }
+
+
     @Obj = ();
 }
 
@@ -157,13 +216,13 @@ foreach  $var (@Obj) {
      $VarPhenoLink = $VarPhenoLink + $tmp_length;
      @tmp = ();
 }
-print OUT "Total Variation -- Phenotype links: $VarPhenoLink\n";
+print OUT "Total Variation--Phenotype links: $VarPhenoLink\n";
 
 my $PaperVarPhenoLink;
 $query = "QUERY FIND Variation Phenotype; follow Reference",    
 @Obj = $db->find($query);
 $PaperVarPhenoLink = @Obj;
-print OUT "Total Papers generated Variation -- Phenotype links: $PaperVarPhenoLink\n";
+print OUT "Papers with Variation--Phenotype links: $PaperVarPhenoLink\n";
 
 my $topic;
 my $TopicGeneLink = 0;
@@ -178,14 +237,14 @@ foreach  $topic (@Obj) {
      $TopicGeneLink = $TopicGeneLink + $tmp_length;
      @tmp = ();
 }
-print OUT "Total Topic -- Gene links: $TopicGeneLink\n";
+print OUT "Total Topic--Gene links: $TopicGeneLink\n";
 foreach  $topic (@Obj) {
     @tmp = $topic->Reference;
      $tmp_length = @tmp;
      $TopicPaperLink = $TopicPaperLink + $tmp_length;
      @tmp = ();
 }
-print OUT "Total Paper -- Topic links: $TopicPaperLink\n";
+print OUT "Total Paper--Topic links: $TopicPaperLink\n";
 foreach  $topic (@Obj) {
     @tmp = $topic->Pathway;
      $tmp_length = @tmp;
