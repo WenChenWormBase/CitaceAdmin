@@ -9,7 +9,7 @@ if ($#ARGV !=0) {
 
 print "Get citace statistics ...\n";
 
-my $tace='/usr/local/bin/tace';
+my $tace='/usr/local/acedb/bin/tace';
 
 my ($s, $query, $TotalObj, $gene, $paper, $tmp_length, $var);
 my $PaperGeneLink = 0;
@@ -23,7 +23,7 @@ my @SimpleQueryList = (
     "find Anatomy_term",
     "find Anatomy_function",
     "find DO_term",
-    "find Disease_model_annotation",    
+    "find Disease_model_annotation",
     "find Expr_pattern",
     "find Picture",    
     "find Microarray_experiment",
@@ -37,6 +37,7 @@ my @SimpleQueryList = (
     "QUERY FIND Interaction Genetic",
     "find Paper",
     "find Person",
+    "find Laboratory",
     "find Transgene",  
     "find WBProcess",  
     "QUERY FIND Variation Phenotype",
@@ -85,6 +86,7 @@ my %SimpleQueryName = (
     "QUERY FIND Interaction Genetic" => "Genetic Interaction",
     "find Paper" => "Paper",
     "find Person" => "Person",
+    "find Laboratory" => "Laboratory", 
     "find Transgene" => "Transgene",  
     "find WBProcess" => "Topic (total)",  
     "QUERY FIND Variation Phenotype" => "Variation with Phenotype",
